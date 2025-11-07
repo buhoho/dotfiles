@@ -1,0 +1,6 @@
+#!/bin/zsh
+# クリップボードをfadoshtuiで読み上げる
+
+tmp=${TMPDIR}sayhoo.txt
+pbpaste > $tmp
+fadosh -a -r 2.0 $tmp

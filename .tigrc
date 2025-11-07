@@ -1,0 +1,11 @@
+set split-view-height = 80%
+set vertical-split = no
+
+color cursor color213 color17
+color status blue color255
+color title-blur color255 color246
+color title-focus 121 18
+set main-view = id date:relative author commit-title:graph=yes,refs=yes
+
+# コピーします。
+bind main 9 @bash -c "echo -n %(commit) | pbcopy"
