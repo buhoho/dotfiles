@@ -57,7 +57,7 @@ bindkey -v
 #    履歴検索操作でカーソルを行末にいい感じに移動してくれるラップ関数
 #    この関数は実行時にカーソル操作をしつつビルトインの関数
 #    history-beginning-search-(backward|forward) の処理を実行する
-autoload history-search-end
+autoload -U history-search-end
 # 2. ZLEで1を使うために専用のウィジェット名で定義する
 #    ウィジェット: zshで「キーボード操作に反応して動く機能」のこと
 zle -N history-beginning-search-backward-end history-search-end
