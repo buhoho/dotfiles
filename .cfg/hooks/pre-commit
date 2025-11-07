@@ -1,0 +1,32 @@
+#!/bin/bash
+# コミット前の危険そうなファイルをリジェクトする
+
+
+# 検索する文字列のリスト
+FORBIDDEN_STRINGS=$(cat "$(dirname "$0")/secret.txt")
+
+if [ -z "$FORBIDDEN_STRINGS" ]; then
+    echo "$(dirname "$0")/secret.txt が空です。"
+    exit 1
+fi
+
+
+# addされたファイルをチェック
+for file in $(/usr/bin/git --git-dir ~/.cfg --work-tree ~ diff --cached --name-only --diff-filter=ACM); do
+	# バイナリファイルやディレクトリをスキップ
+	[ -f "$file" ] || continue
+	matched=$(echo "$file" | grep -oiE "$FORBIDDEN_STRINGS" | head -1)
+	if [ -n "$matched" ]; then
+		echo "禁止ファイル名エラー: '$file' <- '$matched'"
+		exit 1
+	fi
+	matched=$(grep -oiE "$FORBIDDEN_STRINGS" "$file" | head -1)
+	if [ -n "$matched" ]; then
+		echo "禁止文字列エラー: '$file' <- '$matched'"
+		exit 1
+	fi
+done
+
+exit 0
+
+# vim: set ft=bash;
