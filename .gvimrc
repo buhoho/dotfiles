@@ -26,7 +26,7 @@ elseif has('mac')
   set linespace=1
   "set guifont=Courier:h13
   set macligatures
-  set guifont=FiraCode-Light:h15
+  set guifont=FiraCode-Light:h18
   "set guifont=MigMix\ 2M:h9
   "set guifont=Osaka－等幅:h13
   "set guifont=IPAGothic:h11
