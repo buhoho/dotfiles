@@ -17,11 +17,6 @@
 .chat*
 .wget-hsts
 
-# クラウドストレージ
-*ropbox*
-*Google?Drive*
-マイドライブ*
-
 # 各種言語・ツールの環境
 .rbenv/
 .nodenv/
@@ -31,8 +26,6 @@
 .npm/
 .cpanm/
 perl5/
-node_modules/
-package-lock.json
 .openjfx/
 .mono/
 google-cloud-sdk/
@@ -62,7 +55,6 @@ Library/
 Dropbox
 Google Drive
 マイドライブ*
-JoplinBackup/
 
 # ディレクトリ
 *ropbox*
@@ -74,32 +66,22 @@ Desktop/
 Pictures/
 Movies/
 Music/
-Sites/
-work/
 src/
-archive/
-book/
-narou_novel/
+Archive/
 x/
 
 # アプリケーション・バイナリ
 Applications/
-roms/
-MMVCServerSIO*/
 
 # 一時ファイル・バックアップ
 *.bk
 *.tmp
 *.log
 *.err
-*.aes
 *.bak
 hoge*
 yay*
-file_analysis/
-hibp_data/
 
-# 11. Vim関連
 .viminfo
 .zsh_sessions/
 .zcompdump
