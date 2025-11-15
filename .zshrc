@@ -62,6 +62,7 @@ export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat 
 #export PATH="$PATH:$(getconf PATH)"
 # 2025-11-06a これ現代でも必要？
 PATH="/usr/local/bin:$(getconf PATH)"
+export PATH=$PATH:$HOME/bin
 
 # メッセージ
 red='[0;31m'
@@ -127,7 +128,7 @@ alias la='ls -AFhltr'
 alias lx='ls -lhXBtr'          # 拡張子ソート
 alias lk='ls -lhSr'            # サイズソート
 if [ `uname` = "Darwin" ];then # Mac X
-	alias ls='ls -hFtr -G'
+	alias ls='ls -htr -G'
 	alias df='df -h'
 fi
 
@@ -138,6 +139,7 @@ alias 744='chmod 744'
 alias 700='chmod 700'
 alias 666='chmod 666'
 alias 644='chmod 644'
+alias 645='chmod 644'
 alias 000='chmod 000'
 
 alias highlight='highlight --out-format=xterm256 -s moe'
@@ -166,7 +168,16 @@ alias entoja='pbpaste| trans -b en:ja'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
 
 # Bare Git dotfiles
-alias config='/usr/bin/git --git-dir ~/.cfg --work-tree ~'
+config() {
+	# "config" コマンドの引数をチェック
+	if [[ "$1" == "add" && ("$2" == "." || "$2" == "-A" || "$2" == "--all") ]]; then
+		echo "エラー: 'config add .' および 'config add -A' は禁止されています。" >&2
+		return 1 # 失敗ステータスで終了
+	fi
+
+	/usr/bin/git --git-dir ~/.cfg --work-tree ~ "$@"
+}
+
 compdef _git config
 zstyle ':completion:*:*:config:*:*' command 'git'
 
