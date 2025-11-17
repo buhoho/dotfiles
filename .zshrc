@@ -7,8 +7,9 @@ autoload -U colors && colors
 HISTFILE=~/.zsh_history
 HISTSIZE=99999999
 SAVEHIST=99999999
-setopt hist_ignore_dups # 履歴の重複を無視する
-setopt share_history    # 履歴共有
+setopt hist_ignore_dups  # 履歴の重複を無視する
+setopt share_history     # 履歴共有
+setopt HIST_IGNORE_SPACE # スペースで始まるコマンドを履歴に残さない
 
 # cd 履歴
 setopt autocd extendedglob
