@@ -139,7 +139,6 @@ alias 744='chmod 744'
 alias 700='chmod 700'
 alias 666='chmod 666'
 alias 644='chmod 644'
-alias 645='chmod 644'
 alias 000='chmod 000'
 
 alias highlight='highlight --out-format=xterm256 -s moe'
