@@ -1,0 +1,14 @@
+#!/bin/bash
+# trash を使う破壊的変更処理
+
+while IFS= read -r png; do
+    [ -f "$png" ] || { echo "ERROR: ファイルが存在しません: $png" >&2; continue; }
+    [[ "$png" == *.png ]] || { echo "ERROR: PNG形式ではありません: $png" >&2; continue; }
+    dir=$(dirname "$png")
+    basename=$(basename "$png" .png)
+    jpg="${dir}/${basename}.jpg"
+    # PNG → JPEG 変換
+    magick convert "$png" pnm:- | Cjpeg -quality 85 > "$jpg"
+    # 元のPNG削除
+    trash "$png"
+done
