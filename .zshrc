@@ -49,6 +49,9 @@ echo ".zshrc FIXME: 説明を直して。"
 autoload zed # zle 関数を操作するためのエディタらしが不明
 
 # 環境変数
+# 2025-11-06a これ現代でも必要？
+PATH="/usr/local/bin:$(getconf PATH)"
+export PATH=$PATH:$HOME/bin
 #export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 export HISTTIMEFORMAT="%H:%M > "
 #export HISTIGNORE="&:bg:fg:ll:h"
@@ -57,11 +60,6 @@ export WWW_HOME="https://duckduckgo.com"
 export FZF_DEFAULT_OPTS="-m --color=light,bg+:255,fg+:92,hl:198 --history=${HOME}/.fzf.history"
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 [[ $TMUX != "" ]] && alias fzf=fzf-tmux # tmux環境ではそれで開く
-# シェルのネスト呼び出しでnvm のエラーが出るのを回避するため
-# https://github.com/creationix/nvm/issues/1652
-#export PATH="$PATH:$(getconf PATH)"
-# 2025-11-06a これ現代でも必要？
-PATH="/usr/local/bin:$(getconf PATH)"
 
 # メッセージ
 red='[0;31m'
@@ -70,7 +68,7 @@ blue='[0;34m'
 BLUE='[1;34m'
 cyan='[0;36m'
 CYAN='[1;36m'
-NC='[0m'      # No Color
+NC='[0m'              # No Color
 # --> Nice. Has the same effect as using "ansi.sys" in DOS.
 # Looks best on a terminal with black background.....
 #echo -e "${CYAN}This is ZSH ${RED}${BASH_VERSION%.*} ${CYAN} - DISPLAY on ${RED}$DISPLAY${NC}\n"
@@ -83,12 +81,22 @@ trap _exit EXIT
 
 # シェルプロンプト
 function precmd() {
-	psvar[1]=$(pwd | sed "s#$HOME#~#" | awk '{
+	local colors=(027 166 028 161 094 062 124 029 130 055) # 視認性を考慮したカラーテーブル
+	psvar[1]=$(pwd | awk -v home="$HOME" -v colors="${colors[*]}" '{
+
+	split(colors, color_array, " ");
+	color_count = length(color_array);
+
+	# eol は a 配列のサイズ。つまりa[eol]は最後の要素
 	eol = split($0, a, "/");
-	# 7番目に白が入っていて見えにくいので7で丸めます
-	pt = "%F{" eol % 7 "}" a[eol] "%f";
-	if (a[2] == "") pt = "/"
-	if ($0 == "~") pt = "~"
+
+	color_index = (eol % color_count) + 1;
+	pt = "%F{" color_array[color_index] "}" a[eol] "%f";
+
+	# split した右辺が空文字ってことは、/だよね〜
+	if (a[2] == "") pt = "/";
+	if ($0 == home) pt = "~";
+
 	print pt
 	}')
 }
@@ -97,23 +105,20 @@ function middle_prompt() {
 	# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
 	PS1=""
 	# dir name
-	PS1+="%B"
-	PS1+='${psvar[1]}'
-	PS1+="%b "
+	PS1='%B${psvar[1]}%b '
 	# branch
 	PS1+='%F{5}${vcs_info_msg_0_}%f'
-	# $|# 直前のコマンドが失敗したら赤
-	PS1+="%(?,%F{green},%F{red})%#%f"
-	#  >  background job によって色を変える
-	PS1+="%(1j,%F{magenta},%F{green})>%f"
+	# >>
+	PS1+="%(?,%F{green},%F{red})%(#,#,>)"
+	PS1+="%(1j,%F{magenta}>,)>%f"
 	PS1+=" "
 }
-autoload -Uz add-zsh-hook                        # ブランチ名をRPROMPTで表示
+autoload -Uz add-zsh-hook # ブランチ名をRPROMPTで表示
 autoload -Uz vcs_info
-setopt PROMPT_SUBST                              # プロンプト表示ごとに変数を展開する
+setopt PROMPT_SUBST    # プロンプト表示ごとに変数を展開する
 zstyle ':vcs_info:*' formats '%b%c%u '
 zstyle ':vcs_info:*' actionformats '%b%c%u|%a '
-add-zsh-hook precmd vcs_info                     # 上の関数をプロンプト表示前に実行させる
+add-zsh-hook precmd vcs_info  # 上の関数をプロンプト表示前に実行させる
 middle_prompt
 
 ###############################
@@ -157,12 +162,10 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias .......='cd ../../../../../..'
-alias ........='cd ../../../../../..'
+alias ........='cd ../../../../../../..'
 alias path='echo -e ${PATH//:/\\n}'
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
-alias print='/usr/bin/lp -o nobanner -d $LPDEST'
 alias du='du -kh'
-alias entoja='pbpaste| trans -b en:ja'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
 
 # Bare Git dotfiles
@@ -216,7 +219,7 @@ alias -s sh=sh
 alias -s json='jq .'
 alias -s {xhtml,html}=w3m
 # OS X
-#alias -s {gif,jpg,jpeg,png,bmp}=open
+alias -s {gif,jpg,jpeg,png,bmp}='open -a'
 #alias -s {mp3,m4a,ogg}=amarok
 #alias -s {mpg,mpeg,avi.mp4v}=svlc
 
@@ -249,10 +252,50 @@ npx() {
   npx $@
 }
 
+# 2024/01/31 12:14作成(ChatGPTによる)
+# tmuxのセッション一覧を取得する関数
+_tmux_sessions() {
+  local sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+  _describe 'session' sessions
+}
+# tmuxのattach-sessionとkill-sessionコマンドに対して補完を設定
+compdef _tmux_sessions 'tmux attach-session -t'
+compdef _tmux_sessions 'tmux kill-session -t'
+# 2025/04/22 13:32 docker-composeのよく使うサブコマンドでサービス名を動的補完する(ChatGPT)
+_docker_compose_services_dynamic_completion() {
+  local -a existing_services
+  existing_services=(${(@f)$(docker-compose ps --services 2>/dev/null)})
+
+  if [[ -z "$existing_services" ]]; then
+    return
+  fi
+
+  _arguments '*:services:->services'
+
+  case $state in
+    services)
+      _describe 'docker-compose services' existing_services
+      ;;
+  esac
+}
+# docker-composeサブコマンドごとの補完処理
+_docker_compose_subcommand_completion() {
+  case $words[2] in
+    (stop|start|restart|up|logs|rm|exec)
+      _docker_compose_services_dynamic_completion
+      ;;
+    (*)
+      _docker-compose "$@"
+      ;;
+  esac
+}
+# docker-composeの元の補完を維持しつつ、特定のサブコマンドで動的補完を有効化
+compdef _docker_compose_subcommand_completion docker-compose
+
 # 外部リソース
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-[ -f ~/.fzf.zsh ]     && source ~/.fzf.zsh
-[ -f ~/.cargo/evn ]   && source ~/.cargo/env
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.cargo/evn ] && source ~/.cargo/env
 #ハイライト (zshrcの最後に書く必要があるとのこと)
 [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] &&
 	  source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

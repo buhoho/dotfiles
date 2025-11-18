@@ -135,6 +135,8 @@
 	call dein#add('leafgarland/typescript-vim')
 	call dein#add('tpope/vim-markdown')
 
+	call dein#add('vim-scripts/autodate.vim')
+
 
 
 	" Required:
@@ -306,7 +308,8 @@ augroup auto_comment_for_filetype " ファイルタイプごとの設定
 	autocmd FileType css        setlocal iskeyword+=- " attribute とかを想定
 
 	autocmd FileType xml setlocal fileencoding=utf-8
-	autocmd FileType yaml,xml setlocal softtabstop=2 shiftwidth=2 tabstop=2 noexpandtab
+	autocmd FileType xml setlocal softtabstop=2 shiftwidth=2 tabstop=2 noexpandtab
+	autocmd FileType yaml setlocal nosmartindent autoindent expandtab tabstop=2 shiftwidth=2 softtabstop=2
 	autocmd BufNewFile,BufRead,FileType java,javascript setlocal noexpandtab cino=:0 cino==24 cino=M1 cino=j1
 	" android res 以下はデフォルト
 	autocmd BufNewFile,BufRead,FileType */res/*.xml setlocal softtabstop=8 shiftwidth=8 tabstop=8 noexpandtab
@@ -418,6 +421,8 @@ let g:markdown_fenced_languages = [
 \]
 	"\  'bash',  this line error?
 
+ 
+ 
 
 
 
