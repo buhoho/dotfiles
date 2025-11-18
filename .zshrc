@@ -7,8 +7,9 @@ autoload -U colors && colors
 HISTFILE=~/.zsh_history
 HISTSIZE=99999999
 SAVEHIST=99999999
-setopt hist_ignore_dups # 履歴の重複を無視する
-setopt share_history    # 履歴共有
+setopt hist_ignore_dups  # 履歴の重複を無視する
+setopt share_history     # 履歴共有
+setopt HIST_IGNORE_SPACE # スペースで始まるコマンドを履歴に残さない
 
 # cd 履歴
 setopt autocd extendedglob
@@ -132,7 +133,7 @@ alias la='ls -AFhltr'
 alias lx='ls -lhXBtr'          # 拡張子ソート
 alias lk='ls -lhSr'            # サイズソート
 if [ `uname` = "Darwin" ];then # Mac X
-	alias ls='ls -hFtr -G'
+	alias ls='ls -htr -G'
 	alias df='df -h'
 fi
 
@@ -169,7 +170,16 @@ alias du='du -kh'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
 
 # Bare Git dotfiles
-alias config='/usr/bin/git --git-dir ~/.cfg --work-tree ~'
+config() {
+	# "config" コマンドの引数をチェック
+	if [[ "$1" == "add" && ("$2" == "." || "$2" == "-A" || "$2" == "--all") ]]; then
+		echo "エラー: 'config add .' および 'config add -A' は禁止されています。" >&2
+		return 1 # 失敗ステータスで終了
+	fi
+
+	/usr/bin/git --git-dir ~/.cfg --work-tree ~ "$@"
+}
+
 compdef _git config
 zstyle ':completion:*:*:config:*:*' command 'git'
 
