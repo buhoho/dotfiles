@@ -177,7 +177,12 @@ config() {
 		return 1 # 失敗ステータスで終了
 	fi
 
-	/usr/bin/git --git-dir ~/.cfg --work-tree ~ "$@"
+	local git_config_pub="$HOME/.gitconfig.pub"
+	if [[ -f "$git_config_pub" ]]; then
+		/usr/bin/git --git-dir ~/.cfg --work-tree ~ -c include.path="$git_config_pub" "$@"
+	else
+		/usr/bin/git --git-dir ~/.cfg --work-tree ~ "$@"
+	fi
 }
 
 compdef _git config
