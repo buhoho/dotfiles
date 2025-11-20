@@ -171,8 +171,8 @@ syntax on
 call has('python3')
 
 "set listchars=tab:\|\ ,trail:-,nbsp:%,extends:»,precedes:<,eol:\ 
-set listchars=tab:\|\ ,trail:-,nbsp:%,extends:»,precedes:<
-set fillchars=vert:\|,diff:.
+set listchars=tab:│\ ,trail:-,nbsp:%,extends:»,precedes:<
+set fillchars=vert:│,diff:.
 "set number
 set exrc    " カレントの.vimrcを読み込む
 set secure  " コマンドに制限をかける
