@@ -424,8 +424,6 @@ let g:markdown_fenced_languages = [
  
  
 
-
-
 " diff実行時にシンタックスがONになってしまうので、dein系処理のあとに移動してみました。
  set diffopt+=,vertical,iwhite
  if &diff
