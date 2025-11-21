@@ -55,8 +55,10 @@ export HISTTIMEFORMAT="%H:%M > "
 #export HISTIGNORE="&:bg:fg:ll:h"
 export HOSTFILE=$HOME/.hosts    # Put list of remote hosts in ~/.hosts ...
 export WWW_HOME="https://duckduckgo.com"
+export BAT_THEME="Nord"
+export BAT_STYLE="plain"
 export FZF_DEFAULT_OPTS="-m --color=light,bg+:236,fg:250,fg+:255,hl:31,hl+:123 --history=${HOME}/.fzf.history"
-export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=plain --line-range=:200 --theme=Nord {} 2>/dev/null || cat {} || tree -C {}'"
 export FZF_CTRL_R_OPTS="--reverse"
 [[ $TMUX != "" ]] && alias fzf=fzf-tmux # tmux環境ではそれで開く
 # シェルのネスト呼び出しでnvm のエラーが出るのを回避するため
@@ -143,7 +145,6 @@ alias 666='chmod 666'
 alias 644='chmod 644'
 alias 000='chmod 000'
 
-alias highlight='highlight --out-format=xterm256 -s moe'
 alias less='less -R'
 alias clisp='clisp -E UTF-8'
 alias ln='ln -s'
