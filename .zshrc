@@ -57,6 +57,7 @@ export HOSTFILE=$HOME/.hosts    # Put list of remote hosts in ~/.hosts ...
 export WWW_HOME="https://duckduckgo.com"
 export FZF_DEFAULT_OPTS="-m --color=light,bg+:236,fg:250,fg+:255,hl:31,hl+:123 --history=${HOME}/.fzf.history"
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_R_OPTS="--reverse"
 [[ $TMUX != "" ]] && alias fzf=fzf-tmux # tmux環境ではそれで開く
 # シェルのネスト呼び出しでnvm のエラーが出るのを回避するため
 # https://github.com/creationix/nvm/issues/1652
@@ -161,10 +162,7 @@ alias ......='cd ../../../../..'
 alias .......='cd ../../../../../..'
 alias ........='cd ../../../../../..'
 alias path='echo -e ${PATH//:/\\n}'
-alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
-alias print='/usr/bin/lp -o nobanner -d $LPDEST'
 alias du='du -kh'
-alias entoja='pbpaste| trans -b en:ja'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
 
 # Bare Git dotfiles
