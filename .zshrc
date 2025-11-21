@@ -55,7 +55,7 @@ export HISTTIMEFORMAT="%H:%M > "
 #export HISTIGNORE="&:bg:fg:ll:h"
 export HOSTFILE=$HOME/.hosts    # Put list of remote hosts in ~/.hosts ...
 export WWW_HOME="https://duckduckgo.com"
-export FZF_DEFAULT_OPTS="-m --color=light,bg+:255,fg+:92,hl:198 --history=${HOME}/.fzf.history"
+export FZF_DEFAULT_OPTS="-m --color=light,bg+:236,fg:250,fg+:255,hl:31,hl+:123 --history=${HOME}/.fzf.history"
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 [[ $TMUX != "" ]] && alias fzf=fzf-tmux # tmux環境ではそれで開く
 # シェルのネスト呼び出しでnvm のエラーが出るのを回避するため
