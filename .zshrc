@@ -167,31 +167,8 @@ alias du='du -kh'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
 
 # Bare Git dotfiles
-config() {
-	# "config" コマンドの引数をチェック
-	if [[ "$1" == "add" && ("$2" == "." || "$2" == "-A" || "$2" == "--all") ]]; then
-		echo "エラー: 'config add .' および 'config add -A' は禁止されています。" >&2
-		return 1 # 失敗ステータスで終了
-	fi
-
-	/usr/bin/git --git-dir ~/.cfg --work-tree ~ "$@"
-}
-_config() {
-	local -x GIT_DIR="${HOME}/.cfg" GIT_WORK_TREE="${HOME}"
-	local service=git # _git 内での再帰呼び出しを防ぎます
-	functions -c __git_other_files __git_other_files_orig
-	__git_other_files() { return 0 }
-	{
-		_git "$@"
-	} always {
-		# 後始末
-		if (( $+functions[__git_other_files_orig] )); then
-			functions -c __git_other_files_orig __git_other_files
-			unfunction __git_other_files_orig
-		fi
-	}
-}
-compdef _config config
+alias config='/usr/bin/git --git-dir ~/.cfg --work-tree ~ '
+compdef _git config
 zstyle ':completion:*:*:config:*:*' command 'git'
 
 # MacVIM
