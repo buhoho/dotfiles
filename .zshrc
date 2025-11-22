@@ -176,8 +176,22 @@ config() {
 
 	/usr/bin/git --git-dir ~/.cfg --work-tree ~ "$@"
 }
-
-compdef _git config
+_config() {
+	local -x GIT_DIR="${HOME}/.cfg" GIT_WORK_TREE="${HOME}"
+	local service=git # _git 内での再帰呼び出しを防ぎます
+	functions -c __git_other_files __git_other_files_orig
+	__git_other_files() { return 0 }
+	{
+		_git "$@"
+	} always {
+		# 後始末
+		if (( $+functions[__git_other_files_orig] )); then
+			functions -c __git_other_files_orig __git_other_files
+			unfunction __git_other_files_orig
+		fi
+	}
+}
+compdef _config config
 zstyle ':completion:*:*:config:*:*' command 'git'
 
 # MacVIM
