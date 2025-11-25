@@ -420,6 +420,7 @@ let g:markdown_fenced_languages = [
 \]
 	"\  'bash',  this line error?
 
+
  
  
 
@@ -487,6 +488,7 @@ nnoremap <F7> :Ag <CR>
 nnoremap <leader>g :silent !tmux split-window -p 40 "w3m 'https://google.co.jp/search?q='"<CR>
 
 let g:diff_translations = 0
+let g:java_ignore_javadoc = 1 " markdown <-> javadoc での再起読み込みが発生するのでjavadocのシンタックス処理を停止する
 
 " ターミナルのレンダリング高速化のため
 set lazyredraw "再描画待ち

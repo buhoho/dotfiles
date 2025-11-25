@@ -306,6 +306,42 @@ _docker_compose_subcommand_completion() {
 }
 # docker-composeの元の補完を維持しつつ、特定のサブコマンドで動的補完を有効化
 compdef _docker_compose_subcommand_completion docker-compose
+# Ctrl-f で rg fzf 検索
+function fzf-rg-insert-widget() {
+  local selected
+  local awk_pattern
+  
+  # rgコマンド設定
+  # --line-number: 行番号付き
+  # --no-heading: ファイル名を各行の先頭に (fzfでパースしやすくするため)
+  # --color=always: 色情報を維持
+  # --smart-case: 大文字小文字をいい感じに判別
+  local rg_cmd="rg --line-number --no-heading --color=always --smart-case ."
+
+  # awk: 結果を "ファイルパス +行番号" に整形
+  if [[ "${LBUFFER%% *}" =~ ^(vi|vim|nvim)$ ]]; then
+    awk_pattern='{print $1 " +" $2}'  # 行番号付き
+  else
+    awk_pattern='{print $1}'          # それ以外はパスのみ
+  fi
+
+  # fzf実行
+  selected=$(eval "$rg_cmd" | fzf --reverse --ansi \
+    --delimiter : \
+    | awk -F: "${awk_pattern}")
+
+  # 選択された場合、カーソル位置に挿入
+  if [[ -n "$selected" ]]; then
+    LBUFFER="${LBUFFER}${selected}"
+  fi
+  
+  # プロンプト再描画
+  zle reset-prompt
+}
+# ウィジェットとして登録
+zle -N fzf-rg-insert-widget
+# キーバインド設定 (Ctrl-f) vi 挿入モード対象
+bindkey -M viins '^f' fzf-rg-insert-widget
 
 # 外部リソース
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
