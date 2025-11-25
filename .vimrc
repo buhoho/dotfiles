@@ -173,8 +173,8 @@ syntax on
 call has('python3')
 
 "set listchars=tab:\|\ ,trail:-,nbsp:%,extends:»,precedes:<,eol:\ 
-set listchars=tab:\|\ ,trail:-,nbsp:%,extends:»,precedes:<
-set fillchars=vert:\|,diff:.
+set listchars=tab:│\ ,trail:-,nbsp:%,extends:»,precedes:<
+set fillchars=vert:│,diff:.
 "set number
 set exrc    " カレントの.vimrcを読み込む
 set secure  " コマンドに制限をかける
@@ -308,8 +308,7 @@ augroup auto_comment_for_filetype " ファイルタイプごとの設定
 	autocmd FileType css        setlocal iskeyword+=- " attribute とかを想定
 
 	autocmd FileType xml setlocal fileencoding=utf-8
-	autocmd FileType xml setlocal softtabstop=2 shiftwidth=2 tabstop=2 noexpandtab
-	autocmd FileType yaml setlocal nosmartindent autoindent expandtab tabstop=2 shiftwidth=2 softtabstop=2
+	autocmd FileType yml,yaml,xml setlocal softtabstop=2 shiftwidth=2 tabstop=2 noexpandtab
 	autocmd BufNewFile,BufRead,FileType java,javascript setlocal noexpandtab cino=:0 cino==24 cino=M1 cino=j1
 	" android res 以下はデフォルト
 	autocmd BufNewFile,BufRead,FileType */res/*.xml setlocal softtabstop=8 shiftwidth=8 tabstop=8 noexpandtab
@@ -474,7 +473,7 @@ let g:markdown_fenced_languages = [
 
 
 
-let Tlist_WinWidth  = 38      " taglist.vim の横幅
+let Tlist_WinWidth  = 30      " taglist.vim の横幅
 let Tlist_Auto_Open = 0
 let Tlist_Exit_OnlyWindow = 1 " taglistのウインドウだけならVimを閉じる
 " ホットキー(暫定的。他のIDEだとどのキーが標準なんだろう?)
