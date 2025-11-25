@@ -17,6 +17,7 @@ setopt auto_cd
 setopt auto_pushd # 自動PUSH。`cd -<TAB>` で候補補間
 
 # 補完
+fpath=(~/.zsh/completions $fpath)
 autoload bashcompinit && bashcompinit      # 補完の初期化
 autoload -Uz compinit && compinit
 setopt list_packed                         # 補完候補の表示を詰める
@@ -92,8 +93,8 @@ function precmd() {
 	eol = split($0, a, "/");
 	# 7番目に白が入っていて見えにくいので7で丸めます
 	pt = "%F{" eol % 7 "}" a[eol] "%f";
-	if (a[2] == "") pt = "/"
-	if ($0 == "~") pt = "~"
+	if (a[2] == "") pt = "%B%F{196}/%b%f"
+	if ($0 == "~") pt = "%B%F{39}~%b%f"
 	print pt
 	}')
 }
@@ -102,16 +103,23 @@ function middle_prompt() {
 	# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
 	PS1=""
 	# dir name
-	PS1+="%B"
-	PS1+='${psvar[1]}'
-	PS1+="%b "
+	PS1+='${psvar[1]} '
 	# branch
 	PS1+='%F{5}${vcs_info_msg_0_}%f'
+	#PS1+='%(1j,%F{magenta}⏸,)%f'
+	# PS1+='%(1j,%F{magenta}†,)%f'
+	PS1+='%(1j,%F{magenta}𝄐,)%f' # フェルマータ音楽での一時停止記号
+	
 	# $|# 直前のコマンドが失敗したら赤
-	PS1+="%(?,%F{green},%F{red})%#%f"
-	#  >  background job によって色を変える
-	PS1+="%(1j,%F{magenta},%F{green})>%f"
-	PS1+=" "
+	PS1+="%(?,%F{green},%F{red})"
+	# λ,❯,≫,»,%,∴,➜,●,◆
+	# ⊨ 真である
+	#PS1+="%#"
+	PS1+="%(#,#,●)"
+	#    background job によって色を変える
+	# PS1+='${(l:${#jobstates}::❯:)}'
+	#PS1+="%(2j,%F{magenta}%f,)"
+	PS1+="%f "
 }
 autoload -Uz add-zsh-hook                        # ブランチ名をRPROMPTで表示
 autoload -Uz vcs_info
@@ -165,6 +173,8 @@ alias ........='cd ../../../../../..'
 alias path='echo -e ${PATH//:/\\n}'
 alias du='du -kh'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
+alias down='ranger ~/Downloads'
+alias donw=down
 
 # Bare Git dotfiles
 alias config='/usr/bin/git --git-dir ~/.cfg --work-tree ~ '
