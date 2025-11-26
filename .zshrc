@@ -114,8 +114,8 @@ function middle_prompt() {
 	PS1+="%(?,%F{green},%F{red})"
 	# λ,❯,≫,»,%,∴,➜,●,◆
 	# ⊨ 真である
-	#PS1+="%#"
-	PS1+="%(#,#,●)"
+	PS1+="%B%#%b"
+	#PS1+="%(#,#,●)"
 	#    background job によって色を変える
 	# PS1+='${(l:${#jobstates}::❯:)}'
 	#PS1+="%(2j,%F{magenta}%f,)"
