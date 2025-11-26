@@ -1,7 +1,6 @@
 # 🥳  理屈が通れば、それでいい  😜
 
 typeset -U path # 環境変数の重複排除
-autoload -U colors && colors
 
 # 履歴系
 HISTFILE=~/.zsh_history
@@ -18,8 +17,15 @@ setopt auto_pushd # 自動PUSH。`cd -<TAB>` で候補補間
 
 # 補完
 fpath=(~/.zsh/completions $fpath)
-autoload bashcompinit && bashcompinit      # 補完の初期化
-autoload -Uz compinit && compinit
+# キャッシュ(-C)を使うか、セキュリティチェックを真面目にするかの実利的な分岐
+# (24時間に1回だけ真面目にチェックし、それ以外はキャッシュを使う)
+autoload -Uz compinit # 補完の初期化
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+autoload bashcompinit && bashcompinit
 setopt list_packed                         # 補完候補の表示を詰める
 setopt noautoremoveslash                   # 補間後に末尾の/を削除しない(ディレクトリ補間で楽)
 setopt nolistbeep                          # 補間終了時のビープオン抑制
@@ -52,7 +58,8 @@ autoload zed # zle 関数を操作するためのエディタらしが不明
 
 # 環境変数
 # 2025-11-06a これ現代でも必要？
-PATH="/usr/local/bin:$(getconf PATH)"
+# PATH="/usr/local/bin:$(getconf PATH)"
+PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" # getconf 速度。優先のhardcode
 export PATH=$PATH:$HOME/bin
 #export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 export HISTTIMEFORMAT="%H:%M > "
@@ -86,24 +93,25 @@ trap _exit EXIT
 
 # シェルプロンプト
 function precmd() {
-	local colors=(027 166 028 161 094 062 124 029 130 055) # 視認性を考慮したカラーテーブル
-	psvar[1]=$(pwd | awk -v home="$HOME" -v colors="${colors[*]}" '{
+    # 1. ホームディレクトリを ~ に置換
+    local p="${PWD/#$HOME/~}"
 
-	split(colors, color_array, " ");
-	color_count = length(color_array);
+    # 2. 特例: ルートとホームは固定色で見やすく
+    if [[ "$p" == "/" ]]; then
+        psvar[1]="%B%F{196}/%b%f"
+        return
+    elif [[ "$p" == "~" ]]; then
+        psvar[1]="%B%F{39}~%b%f"
+        return
+    fi
 
-	# eol は a 配列のサイズ。つまりa[eol]は最後の要素
-	eol = split($0, a, "/");
+    # 3. 一般ディレクトリ: / の数を数えて色を回転させる
+    # ${p//[^\/]/} でスラッシュ以外を削除してカウント
+    # (( n % 6 + 1 )) で 1〜6 (赤緑黄青紫水) の色番号を算出
+    local c=$(( ${#p//[^\/]/} % 14 + 1 ))
 
-	color_index = (eol % color_count) + 1;
-	pt = "%F{" color_array[color_index] "}" a[eol] "%f";
-
-	# split した右辺が空文字ってことは、/だよね〜
-	if (a[2] == "") pt = "%B%F{196}/%b%f";
-	if ($0 == home) pt = "%B%F{39}~%b%f";
-
-	print pt
-	}')
+    # 4. セット: 算出した色 + 末尾のディレクトリ名(:t)
+    psvar[1]="%F{$c}${p:t}%f"
 }
 function middle_prompt() {
 	# 日本語サイトググるよりここ読んだほうが一発でした
@@ -112,7 +120,7 @@ function middle_prompt() {
 	# dir name
 	PS1+='${psvar[1]} '
 	# branch
-	PS1+='%F{5}${vcs_info_msg_0_}%f'
+	PS1+='%F{203}${vcs_info_msg_0_}%f'
 	#PS1+='%(1j,%F{magenta}⏸,)%f'
 	# PS1+='%(1j,%F{magenta}†,)%f'
 	PS1+='%(1j,%F{magenta}𝄐,)%f' # フェルマータ音楽での一時停止記号
@@ -146,7 +154,7 @@ alias ll='ls -Fhltr'           # 時系列表示が好みなので tr で時系�
 alias la='ls -AFhltr'
 alias lx='ls -lhXBtr'          # 拡張子ソート
 alias lk='ls -lhSr'            # サイズソート
-if [ `uname` = "Darwin" ];then # Mac X
+if [[ $OSTYPE == darwin* ]];then # Mac X
 	alias ls='ls -htr -G'
 	alias df='df -h'
 fi
