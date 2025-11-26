@@ -51,6 +51,9 @@ echo ".zshrc FIXME: 説明を直して。"
 autoload zed # zle 関数を操作するためのエディタらしが不明
 
 # 環境変数
+# 2025-11-06a これ現代でも必要？
+PATH="/usr/local/bin:$(getconf PATH)"
+export PATH=$PATH:$HOME/bin
 #export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 export HISTTIMEFORMAT="%H:%M > "
 #export HISTIGNORE="&:bg:fg:ll:h"
@@ -62,12 +65,6 @@ export FZF_DEFAULT_OPTS="-m --color=light,bg+:236,fg:250,fg+:255,hl:31,hl+:123 -
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=plain --line-range=:200 --theme=Nord {} 2>/dev/null || cat {} || tree -C {}'"
 export FZF_CTRL_R_OPTS="--reverse"
 [[ $TMUX != "" ]] && alias fzf=fzf-tmux # tmux環境ではそれで開く
-# シェルのネスト呼び出しでnvm のエラーが出るのを回避するため
-# https://github.com/creationix/nvm/issues/1652
-#export PATH="$PATH:$(getconf PATH)"
-# 2025-11-06a これ現代でも必要？
-PATH="/usr/local/bin:$(getconf PATH)"
-export PATH=$PATH:$HOME/bin
 
 # メッセージ
 red='[0;31m'
@@ -76,7 +73,7 @@ blue='[0;34m'
 BLUE='[1;34m'
 cyan='[0;36m'
 CYAN='[1;36m'
-NC='[0m'      # No Color
+NC='[0m'              # No Color
 # --> Nice. Has the same effect as using "ansi.sys" in DOS.
 # Looks best on a terminal with black background.....
 #echo -e "${CYAN}This is ZSH ${RED}${BASH_VERSION%.*} ${CYAN} - DISPLAY on ${RED}$DISPLAY${NC}\n"
@@ -89,12 +86,22 @@ trap _exit EXIT
 
 # シェルプロンプト
 function precmd() {
-	psvar[1]=$(pwd | sed "s#$HOME#~#" | awk '{
+	local colors=(027 166 028 161 094 062 124 029 130 055) # 視認性を考慮したカラーテーブル
+	psvar[1]=$(pwd | awk -v home="$HOME" -v colors="${colors[*]}" '{
+
+	split(colors, color_array, " ");
+	color_count = length(color_array);
+
+	# eol は a 配列のサイズ。つまりa[eol]は最後の要素
 	eol = split($0, a, "/");
-	# 7番目に白が入っていて見えにくいので7で丸めます
-	pt = "%F{" eol % 7 "}" a[eol] "%f";
-	if (a[2] == "") pt = "%B%F{196}/%b%f"
-	if ($0 == "~") pt = "%B%F{39}~%b%f"
+
+	color_index = (eol % color_count) + 1;
+	pt = "%F{" color_array[color_index] "}" a[eol] "%f";
+
+	# split した右辺が空文字ってことは、/だよね〜
+	if (a[2] == "") pt = "%B%F{196}/%b%f";
+	if ($0 == home) pt = "%B%F{39}~%b%f";
+
 	print pt
 	}')
 }
@@ -121,12 +128,12 @@ function middle_prompt() {
 	#PS1+="%(2j,%F{magenta}%f,)"
 	PS1+="%f "
 }
-autoload -Uz add-zsh-hook                        # ブランチ名をRPROMPTで表示
+autoload -Uz add-zsh-hook # ブランチ名をRPROMPTで表示
 autoload -Uz vcs_info
-setopt PROMPT_SUBST                              # プロンプト表示ごとに変数を展開する
+setopt PROMPT_SUBST    # プロンプト表示ごとに変数を展開する
 zstyle ':vcs_info:*' formats '%b%c%u '
 zstyle ':vcs_info:*' actionformats '%b%c%u|%a '
-add-zsh-hook precmd vcs_info                     # 上の関数をプロンプト表示前に実行させる
+add-zsh-hook precmd vcs_info  # 上の関数をプロンプト表示前に実行させる
 middle_prompt
 
 ###############################
@@ -169,7 +176,7 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias .......='cd ../../../../../..'
-alias ........='cd ../../../../../..'
+alias ........='cd ../../../../../../..'
 alias path='echo -e ${PATH//:/\\n}'
 alias du='du -kh'
 alias yt-dlp-mp3='yt-dlp -f bestaudio --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
@@ -227,7 +234,7 @@ alias -s sh=sh
 alias -s json='jq .'
 alias -s {xhtml,html}=w3m
 # OS X
-#alias -s {gif,jpg,jpeg,png,bmp}=open
+alias -s {gif,jpg,jpeg,png,bmp}='open -a'
 #alias -s {mp3,m4a,ogg}=amarok
 #alias -s {mpg,mpeg,avi.mp4v}=svlc
 
@@ -260,10 +267,86 @@ npx() {
   npx $@
 }
 
+# 2024/01/31 12:14作成(ChatGPTによる)
+# tmuxのセッション一覧を取得する関数
+_tmux_sessions() {
+  local sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+  _describe 'session' sessions
+}
+# tmuxのattach-sessionとkill-sessionコマンドに対して補完を設定
+compdef _tmux_sessions 'tmux attach-session -t'
+compdef _tmux_sessions 'tmux kill-session -t'
+# 2025/04/22 13:32 docker-composeのよく使うサブコマンドでサービス名を動的補完する(ChatGPT)
+_docker_compose_services_dynamic_completion() {
+  local -a existing_services
+  existing_services=(${(@f)$(docker-compose ps --services 2>/dev/null)})
+
+  if [[ -z "$existing_services" ]]; then
+    return
+  fi
+
+  _arguments '*:services:->services'
+
+  case $state in
+    services)
+      _describe 'docker-compose services' existing_services
+      ;;
+  esac
+}
+# docker-composeサブコマンドごとの補完処理
+_docker_compose_subcommand_completion() {
+  case $words[2] in
+    (stop|start|restart|up|logs|rm|exec)
+      _docker_compose_services_dynamic_completion
+      ;;
+    (*)
+      _docker-compose "$@"
+      ;;
+  esac
+}
+# docker-composeの元の補完を維持しつつ、特定のサブコマンドで動的補完を有効化
+compdef _docker_compose_subcommand_completion docker-compose
+# Ctrl-f で rg fzf 検索
+function fzf-rg-insert-widget() {
+  local selected
+  local awk_pattern
+  
+  # rgコマンド設定
+  # --line-number: 行番号付き
+  # --no-heading: ファイル名を各行の先頭に (fzfでパースしやすくするため)
+  # --color=always: 色情報を維持
+  # --smart-case: 大文字小文字をいい感じに判別
+  local rg_cmd="rg --line-number --no-heading --color=always --smart-case ."
+
+  # awk: 結果を "ファイルパス +行番号" に整形
+  if [[ "${LBUFFER%% *}" =~ ^(vi|vim|nvim)$ ]]; then
+    awk_pattern='{print $1 " +" $2}'  # 行番号付き
+  else
+    awk_pattern='{print $1}'          # それ以外はパスのみ
+  fi
+
+  # fzf実行
+  selected=$(eval "$rg_cmd" | fzf --reverse --ansi \
+    --delimiter : \
+    | awk -F: "${awk_pattern}")
+
+  # 選択された場合、カーソル位置に挿入
+  if [[ -n "$selected" ]]; then
+    LBUFFER="${LBUFFER}${selected}"
+  fi
+  
+  # プロンプト再描画
+  zle reset-prompt
+}
+# ウィジェットとして登録
+zle -N fzf-rg-insert-widget
+# キーバインド設定 (Ctrl-f) vi 挿入モード対象
+bindkey -M viins '^f' fzf-rg-insert-widget
+
 # 外部リソース
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-[ -f ~/.fzf.zsh ]     && source ~/.fzf.zsh
-[ -f ~/.cargo/evn ]   && source ~/.cargo/env
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.cargo/evn ] && source ~/.cargo/env
 #ハイライト (zshrcの最後に書く必要があるとのこと)
 [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] &&
 	  source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

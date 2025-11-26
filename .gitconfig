@@ -6,15 +6,14 @@
     cmd = vimdiff -f "$LOCAL" "$REMOTE" '+syntax off'
 
 [difftool]
-    prompt = false
-
-[mergetool "vimdiff"]
-    # gitビルトインのvimdiffはセグフォルトするため、MacVim版を使用
-    # 
-    # ウィンドウ配置: [1:LOCAL] [2:MERGED] [3:REMOTE]
-    # 操作: 1go=左から取得、3go=右から取得
+	prompt = false
+[merge]
+	tool = vimdiff
+[mergetool]
+	prompt = false
     cmd = /Applications/MacVim.app/Contents/MacOS/Vim -f -d -c 'wincmd l' "$LOCAL" "$MERGED" "$REMOTE" '+syntax off'
-
+[commit]
+	verbose = true
 # 個人情報は .gitconfig_local に記載
 [include]
     path = ~/.gitconfig.local

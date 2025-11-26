@@ -31,6 +31,9 @@ y = 8
 x = 0
 y = 3
 
+[colors]
+draw_bold_text_with_bright_colors = false
+
 [colors.primary]
 background = "#1c1c1f"
 foreground = "#B3B1AD"
@@ -102,6 +105,11 @@ mode = "AppCursor"
 chars = "\u001B[4~"
 key = "End"
 mode = "~AppCursor"
+
+[[keyboard.bindings]]
+chars = '\'
+key = "¥"
+mods = "Shift"
 
 [[keyboard.bindings]]
 chars = '\'
@@ -317,3 +325,8 @@ mods = "Command|Shift"
 action = "IncreaseFontSize"
 key = "+"
 mods = "Command|Shift"
+
+
+[bell]
+animation = "EaseOutExpo"
+duration = 0
