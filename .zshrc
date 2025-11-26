@@ -117,23 +117,12 @@ function middle_prompt() {
 	# 日本語サイトググるよりここ読んだほうが一発でした
 	# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
 	PS1=""
-	# dir name
-	PS1+='${psvar[1]} '
-	# branch
-	PS1+='%F{203}${vcs_info_msg_0_}%f'
-	#PS1+='%(1j,%F{magenta}⏸,)%f'
-	# PS1+='%(1j,%F{magenta}†,)%f'
-	PS1+='%(1j,%F{magenta}𝄐,)%f' # フェルマータ音楽での一時停止記号
-	
-	# $|# 直前のコマンドが失敗したら赤
-	PS1+="%(?,%F{green},%F{red})"
-	# λ,❯,≫,»,%,∴,➜,●,◆
-	# ⊨ 真である
-	PS1+="%B%#%b"
-	#PS1+="%(#,#,●)"
-	#    background job によって色を変える
-	# PS1+='${(l:${#jobstates}::❯:)}'
-	#PS1+="%(2j,%F{magenta}%f,)"
+	PS1+='${psvar[1]} '                # dir name
+	PS1+='%F{203}${vcs_info_msg_0_}%f' # branch
+	PS1+='%(1j,%F{magenta}𝄐,)%f'       # フェルマータで停止ジョブ表現
+	PS1+="%(?,%F{39},%F{red})"         # コマンド成否で色を変える
+	#PS1+="%B%#%b"
+	PS1+="%(#,#,∬)"
 	PS1+="%f "
 }
 autoload -Uz add-zsh-hook # ブランチ名をRPROMPTで表示
