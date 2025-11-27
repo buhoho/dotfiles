@@ -1,0 +1,184 @@
+# --- Parent Sibling Navigation (Approximate) ---
+
+# [: 前の親階層フォルダへ (擬似)
+# 動作: 親へ戻る -> 上へ移動 -> 入る
+[[mgr.prepend_keymap]]
+on   = [ "[" ]
+run  = [ "leave", "arrow -1", "enter" ]
+desc = "Go to previous directory in parent"
+
+# ]: 次の親階層フォルダへ (擬似)
+# 動作: 親へ戻る -> 下へ移動 -> 入る
+[[mgr.prepend_keymap]]
+on   = [ "]" ]
+run  = [ "leave", "arrow 1", "enter" ]
+desc = "Go to next directory in parent"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "/" ]
+run  = [ "cd /" ]
+desc = "Go to root directory"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "n" ]
+run  = [ "tab_create" ]
+desc = "Go to new tab"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "t" ]
+run  = [ "tab_switch --relative +1" ]
+desc = "Go to next tab"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "T" ]
+run  = [ "tab_switch --relative -1" ]
+desc = "Go to prev tab"
+
+##g1: タブ1 (インデックス0)
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "1" ]
+#run  = [ "tab_switch 0" ]
+#desc = "Switch to tab 1"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "2" ]
+#run  = [ "tab_switch 1" ]
+#desc = "Switch to tab 2"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "3" ]
+#run  = [ "tab_switch 2" ]
+#desc = "Switch to tab 3"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "4" ]
+#run  = [ "tab_switch 3" ]
+#desc = "Switch to tab 4"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "5" ]
+#run  = [ "tab_switch 4" ]
+#desc = "Switch to tab 5"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "6" ]
+#run  = [ "tab_switch 5" ]
+#desc = "Switch to tab 6"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "7" ]
+#run  = [ "tab_switch 6" ]
+#desc = "Switch to tab 7"
+#
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "8" ]
+#run  = [ "tab_switch 7" ]
+#desc = "Switch to tab 8"
+#
+## g9: タブ9 (インデックス8)
+#[[mgr.prepend_keymap]]
+#on   = [ "g", "9" ]
+#run  = [ "tab_switch 8" ]
+#desc = "Switch to tab 9"
+
+
+[[mgr.prepend_keymap]]
+on   = [ " " ]
+run  = [ "select --state=none", "arrow 1" ]
+desc = "Ranger style: Toggle selection and move down"
+
+[[mgr.prepend_keymap]]
+on   = [ "v" ]
+run  = [ "visual_mode" ]
+desc = "Enter visual mode (invert selection like ranger is harder, but this is close)"
+
+[[mgr.prepend_keymap]]
+on   = [ "d", "d" ]
+run  = [ "yank --cut" ]
+desc = "Cut selected files (Ranger style)"
+
+[[mgr.prepend_keymap]]
+on   = [ "d", "D" ]
+run  = [ "remove" ]
+desc = "remove files (Ranger style)"
+
+[[mgr.prepend_keymap]]
+on   = [ "y", "y" ]
+run  = [ "yank" ]
+desc = "Copy selected files (Ranger style)"
+
+[[mgr.prepend_keymap]]
+on   = [ "p", "p" ]
+run  = [ "paste" ]
+desc = "Paste files"
+
+
+
+# --- Sorting (Ranger Style with Case Sensitivity) ---
+
+# om: 更新日 (Modified) - 新しい順
+[[mgr.prepend_keymap]]
+on   = [ "o", "m" ]
+run  = "sort mtime --reverse=yes"
+desc = "Sort by mtime (newest first)"
+
+# oM: 更新日 (Modified) - 古い順
+[[mgr.prepend_keymap]]
+on   = [ "o", "M" ]
+run  = "sort mtime --reverse=no"
+desc = "Sort by mtime (oldest first)"
+
+# on: 名前 (Natural) - A to Z
+[[mgr.prepend_keymap]]
+on   = [ "o", "n" ]
+run  = "sort natural --reverse=no"
+desc = "Sort by name (A-Z)"
+
+# oN: 名前 (Natural) - Z to A
+[[mgr.prepend_keymap]]
+on   = [ "o", "N" ]
+run  = "sort natural --reverse=yes"
+desc = "Sort by name (Z-A)"
+
+# os: サイズ (Size) - 大きい順
+[[mgr.prepend_keymap]]
+on   = [ "o", "s" ]
+run  = "sort size --reverse=yes"
+desc = "Sort by size (large first)"
+
+# oS: サイズ (Size) - 小さい順
+[[mgr.prepend_keymap]]
+on   = [ "o", "S" ]
+run  = "sort size --reverse=no"
+desc = "Sort by size (small first)"
+
+
+# --- Rename (Ranger/Vim Style) ---
+
+# a: 拡張子の手前にカーソル (Append to filename)
+# 例: file|.txt
+[[mgr.prepend_keymap]]
+on   = [ "a" ]
+run  = "rename --cursor=before_ext"
+desc = "Rename (append to filename)"
+
+# A: 完全に末尾にカーソル (Append to line)
+# 例: file.txt|
+[[mgr.prepend_keymap]]
+on   = [ "A" ]
+run  = "rename --cursor=end"
+desc = "Rename (append to full name)"
+
+# I: 先頭にカーソル (Insert at start)
+# 例: |file.txt
+[[mgr.prepend_keymap]]
+on   = [ "I" ]
+run  = "rename --cursor=start"
+desc = "Rename (insert at start)"
+
+# cw: 名前部分だけを空にして入力待ち (Change Word)
+# 例: |.txt  (拡張子は残る)
+[[mgr.prepend_keymap]]
+on   = [ "c", "w" ]
+run  = "rename --empty=stem --cursor=start"
+desc = "Rename (new filename, keep ext)"
