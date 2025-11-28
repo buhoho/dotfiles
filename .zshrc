@@ -342,7 +342,7 @@ bindkey -M viins '^f' fzf-rg-insert-widget
 
 # 外部リソース
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+(( $+commands[fzf] )) && source <(fzf --zsh)
 [ -f ~/.cargo/evn ] && source ~/.cargo/env
 #ハイライト (zshrcの最後に書く必要があるとのこと)
 [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] &&

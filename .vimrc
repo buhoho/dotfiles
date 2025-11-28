@@ -27,11 +27,6 @@
 " プラグイン管理
 " https://raw.githubusercontent.com/Shougo/dein.vim
 "dein Scripts=================================================================
-	call dein#add('kien/rainbow_parentheses.vim')
-		" rainbow_parentheses.vimの括弧の色付けを有効化
-		au VimEnter * RainbowParenthesesToggle
-		au Syntax * RainbowParenthesesLoadRound
-		au Syntax * RainbowParenthesesLoadSquare   "nnoremap ,g :call FilteringGetForSource().return()<CR>
 	call dein#add('tpope/vim-surround')
 	call dein#add('tpope/vim-repeat')
 	"vim-ref のドキュメントとかは環境毎に設定＆読み込みしてね
@@ -44,11 +39,10 @@
 		nmap ga <Plug>(EasyAlign)
 		xmap ga <Plug>(EasyAlign)
 
-	"set rtp+=/usr/local/opt/fzf "fzfのプラグイン登録
 	" 参考:
 	" https://github.com/Shougo/dein.vim/issues/74
-	call dein#add('junegunn/fzf', {'build': './install --all', 'merged': 0})
-	call dein#add('junegunn/fzf.vim', {'depends': 'fzf'}) 
+	call dein#add('junegunn/fzf', {'merged': 0})          " fzf 本体かつプラグイン本体
+	call dein#add('junegunn/fzf.vim', {'depends': 'fzf'}) " ヘルパースクリプト
 		" タブ
 		nmap <leader><tab> <plug>(fzf-maps-n)
 		xmap <leader><tab> <plug>(fzf-maps-x)
@@ -67,51 +61,8 @@
 	call dein#add('deris/vim-shot-f')
 	call dein#add('zhaocai/GoldenView.Vim')
 		let g:goldenview__enable_default_mapping = 0
-	call dein#add('Valloric/YouCompleteMe')
-		" tags コンプリートを有効化
-		" ctags -R --fields=+l じゃないと動作しない
-		let g:ycm_collect_identifiers_from_tags_files = 1
-		"let g:ycm_key_list_select_completion = ['<Enter>', '<TAB><ESC><ESC>']
-		set omnifunc=syntaxcomplete#Complete
-		let g:ycm_server_keep_logfiles = 1
-		let g:ycm_server_log_level = 'debug'
-		"let g:ycm_key_invoke_completion = '<Enter>'
 	call dein#add('leafOfTree/vim-vue-plugin')
 
-	"call dein#add('Shougo/neocomplete.vim')
-	"	let g:neocomplete#enable_at_startup  = 1
-	"	let g:neocomplete#enable_auto_select = 1
-	"	let g:neocomplete#enable_camel_case  = 1
-	"	" tags 取得がうまく動いていないようなのでデフォルト値の二倍にしてみる
-	"	g:neocomplete#sources#tags#cache_limit_size=1000000
-	"	" <TAB>: completion.
-	"	inoremap <expr><TAB>  pumvisible() ? '\<C-n>' : '\<TAB>'
-	"	" <C-h>, <BS>: close popup and delete backword char.
-	"	" 
-	"	'inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-	"	'inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-	"	" php 設定 Examples:
-	"	if !exists('g:neocomplete#sources#omni#input_patterns')
-	"	  let g:neocomplete#sources#omni#input_patterns = {}
-	"	endif
-	"	"どこで拾ったphpの設定だっただろうか？
-	"	"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?'
-	"	" shogoの例をそのままコピペ
-	"	autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-	"	autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-	"	let g:neocomplete#sources#omni#input_patterns.c =
-	"		\ '[^.[:digit:] *\t]\%(\.\|->\)\%(\h\w*\)\?'
-
-	"call dein#add('beanworks/vim-phpfmt')
-	"	let g:phpfmt_standard = 'PSR0'
-	"	let g:phpfmt_autosave = 0
-	"call dein#add('flyinshadow/php_localvarcheck.vim') "これすげー
-		"let g:php_localvarcheck_global = 0 "重いので試しに消してみる
-		"今のところphpudのお陰で特に問題ない
-
-	"call dein#add('shawncplus/phpcomplete.vim')
-	"	"let g:neocomplete#sources#omni#input_patterns.php =
-	"	"'\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?'
 	call dein#add('joonty/vdebug')
 		" 各プロジェクトのvimrcで設定する
 
@@ -119,22 +70,14 @@
 		nnoremap <silent> <C-d> :call comfortable_motion#flick(100)<CR>
 		"nnoremap <silent> <C-u> :call comfortable_motion#flick(-100)<CR>
 
-	"call dein#add('evanmiller/nginx-vim-syntax') not found
-
 	call dein#add('w0rp/ale')
 		let g:ale_linters = {
 			\'php': [],
 		\}
 
 	call dein#add('airblade/vim-gitgutter')
-
-	"call dein#add('violetyk/neocomplete-php.vim')
-	"	" http://yuheikagaya.hatenablog.jp/entry/2014/01/19/235957
-	"	let g:neocomplete_php_locale = 'ja'
-
 	call dein#add('leafgarland/typescript-vim')
 	call dein#add('tpope/vim-markdown')
-
 	call dein#add('vim-scripts/autodate.vim')
 
 

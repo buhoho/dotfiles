@@ -83,9 +83,14 @@ desc = "Go to prev tab"
 
 
 [[mgr.prepend_keymap]]
-on   = [ " " ]
-run  = [ "select --state=none", "arrow 1" ]
+on   = [ "<Space>" ]
+run  = [ "toggle", "arrow 1" ]
 desc = "Ranger style: Toggle selection and move down"
+
+[[mgr.prepend_keymap]]
+on = "l"
+run = "plugin smart-enter"
+desc = "Ranger style: enter dir or open file"
 
 [[mgr.prepend_keymap]]
 on   = [ "v" ]
