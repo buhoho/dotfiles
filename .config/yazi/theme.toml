@@ -1,0 +1,31 @@
+[mgr]
+# 罫線を空文字にして、視覚的に消す
+border_symbol = " "
+
+[icon]
+# 1. デフォルトの優先ルールを空にして無効化します。
+# これをしないと、拡張子マッチなどが優先されてアイコンが出てしまいます。
+globs = []
+dirs  = []
+files = []
+exts  = []
+
+# 2. すべての条件（conds）に対して空白を設定します（ご指定のリスト網羅＋通常ファイル対応）
+conds = [
+	# ご指定のリスト
+	{ if = "dir",    text = " " },
+	{ if = "hidden", text = " " },
+	{ if = "link",   text = " " },
+	{ if = "orphan", text = " " },
+	{ if = "dummy",  text = " " },
+	{ if = "block",  text = " " },
+	{ if = "char",   text = " " },
+	{ if = "fifo",   text = " " },
+	{ if = "sock",   text = " " },
+	{ if = "exec",   text = " " },
+	{ if = "sticky", text = " " },
+	
+	# 3. 上記のどれにも当てはまらない「普通のファイル」用
+	# （条件は !dir で「ディレクトリ以外」として拾います）
+	{ if = "!dir",   text = " " },
+]

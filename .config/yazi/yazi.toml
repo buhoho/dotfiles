@@ -1,0 +1,7 @@
+[mgr]
+# Rangerのデフォルト比率に合わせる
+ratio = [ 1, 3, 4 ]
+
+# 親ディレクトリの自動プレビューなどが不要ならここで調整
+# show_hidden = false
+# sort_by = "natural"
