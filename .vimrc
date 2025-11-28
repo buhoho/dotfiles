@@ -79,6 +79,9 @@
 	call dein#add('leafgarland/typescript-vim')
 	call dein#add('tpope/vim-markdown')
 	call dein#add('vim-scripts/autodate.vim')
+	call dein#add('luochen1990/rainbow')
+	    let g:rainbow_active = 1 " 常に有効にする
+	call dein#add('neoclide/coc.nvim', {'merged': 0, 'rev': 'release'})
 
 
 
