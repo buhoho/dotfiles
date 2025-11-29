@@ -53,7 +53,7 @@ zle -N history-beginning-search-forward-end history-search-end
 bindkey "^p" history-beginning-search-backward-end
 bindkey "^n" history-beginning-search-forward-end
 
-echo ".zshrc FIXME: 説明を直して。"
+# echo ".zshrc FIXME: 説明を直して。"
 autoload zed # zle 関数を操作するためのエディタらしが不明
 
 # 環境変数
@@ -117,13 +117,17 @@ function middle_prompt() {
 	# 日本語サイトググるよりここ読んだほうが一発でした
 	# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
 	PS1=""
-	PS1+='${psvar[1]} '                # dir name
-	PS1+='%F{203}${vcs_info_msg_0_}%f' # branch
-	PS1+='%(1j,%F{magenta}𝄐,)%f'       # フェルマータで停止ジョブ表現
-	PS1+="%(?,%F{39},%F{red})"         # コマンド成否で色を変える
+	PS1+='${psvar[1]}'            # dir name
+	# ❖◆◆⍦❖⌥⎇⎎⏿⑂⑁⑃⛙⛼
+	PS1+='%F{203}${vcs_info_msg_0_:+ ❖}${vcs_info_msg_0_% }%f' # branch
+	PS1+='%(1j,%F{magenta} 𝄐,)%f' # フェルマータで停止ジョブ表現
+	PS1+="%(?,%F{39},%F{red})"    # コマンド成否で色を変える
 	#PS1+="%B%#%b"
-	PS1+="%(#,#,∬)"
+	#↘∬
+	PS1+=" %(#,#,∬)"
 	PS1+="%f "
+
+	PS2="%_%F{1}↘%f "
 }
 autoload -Uz add-zsh-hook # ブランチ名をRPROMPTで表示
 autoload -Uz vcs_info
