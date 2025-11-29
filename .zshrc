@@ -127,7 +127,7 @@ function middle_prompt() {
 	PS1+=" %(#,#,∬)"
 	PS1+="%f "
 
-	PS2="%_%F{1}↘%f "
+	PS2='${${(%):-%_}:0:2}%F{1}↘%f '
 }
 autoload -Uz add-zsh-hook # ブランチ名をRPROMPTで表示
 autoload -Uz vcs_info
