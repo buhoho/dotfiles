@@ -13,14 +13,14 @@ prepend_previewers = [
 ]
 
 [opener]
-# raner に従い scope という名前にしました2025/11/29  2:12
-scope_block  = [{ run = '~/.config/yazi/scripts/scope.sh "$1"', block = true, desc = "scope (block)" }]
-scope_orphan = [{ run = '~/.config/yazi/scripts/scope.sh "$1"', block = false, orphan = true, desc = "scope (orphan)" }]
+# raner に従い rifle という名前にしました2025/12/02 16:20
+rifle_block  = [{ run = '~/.config/yazi/scripts/rifle.sh "$1"', block = true, desc = "rifle (block)" }]
+rifle_orphan = [{ run = '~/.config/yazi/scripts/rifle.sh "$1"', block = false, orphan = true, desc = "rifle (orphan)" }]
 
 [open]
 rules = [
-    { mime = "audio/*", use = "scope_orphan" },
+    { mime = "audio/*", use = "rifle_orphan" },
     { mime = "video/*", use = "open" },
     { mime = "image/*", use = "open" },
-    { mime = "*", use = "scope_block" },
+    { mime = "*", use = "rifle_block" },
 ]
