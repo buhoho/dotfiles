@@ -116,7 +116,7 @@ function precmd() {
 function middle_prompt() {
 	# 日本語サイトググるよりここ読んだほうが一発でした
 	# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
-	PS1=""
+	PS1=''
 	PS1+='${psvar[1]}'            # dir name
 	# ❖◆◆⍦❖⌥⎇⎎⏿⑂⑁⑃⛙⛼
 	PS1+='%F{203}${vcs_info_msg_0_:+ ❖}${vcs_info_msg_0_% }%f' # branch
@@ -124,8 +124,8 @@ function middle_prompt() {
 	PS1+="%(?,%F{39},%F{red})"    # コマンド成否で色を変える
 	#PS1+="%B%#%b"
 	#↘∬
-	PS1+=" %(#,#,∬)"
-	PS1+="%f "
+	PS1+=' %(#,#,${MYPS1:-∬})'
+	PS1+='%f '
 
 	PS2='${${(%):-%_}:0:2}%F{1}↘%f '
 }
