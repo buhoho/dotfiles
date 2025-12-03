@@ -344,6 +344,11 @@ zle -N fzf-rg-insert-widget
 # キーバインド設定 (Ctrl-f) vi 挿入モード対象
 bindkey -M viins '^f' fzf-rg-insert-widget
 
+function sleep_bell {
+	[[ -z "$1" ]] && echo "running default 180sec sleep!\nUsage: sleep_bell <seconds>\n" >&2
+	pv -L1 -s${1:-180} -pteS /dev/zero > /dev/null && mpv "$BELL_MP3"
+}
+
 # 外部リソース
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 (( $+commands[fzf] )) && source <(fzf --zsh)
